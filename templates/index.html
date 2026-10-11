@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#260b14">
+  <title>BC7 — The Golden Age</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="backdrop-glow glow-left" aria-hidden="true"></div>
+  <div class="backdrop-glow glow-right" aria-hidden="true"></div>
+  <main class="viewport-stage">
+    <section class="machine" aria-label="Игровой автомат BC7">
+      <div class="outer-ornament" aria-hidden="true"></div>
+      <div class="cabinet">
+        <header class="marquee">
+          <div class="bulb-row bulb-row-top" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="marquee-content">
+            <span class="side-star" aria-hidden="true">✦</span>
+            <div class="brand-copy">
+              <p class="brand-kicker">★ BAIZAK ORIGINAL ★</p>
+              <h1>BC<span>7</span></h1>
+              <p class="brand-subtitle">THE GOLDEN AGE</p>
+            </div>
+            <span class="side-star" aria-hidden="true">✦</span>
+          </div>
+          <div class="marquee-ribbon"><span>LUCK • GLAMOUR • GOOD TIMES</span></div>
+          <div class="bulb-row bulb-row-bottom" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </header>
+
+        <section class="scoreboard" aria-label="Игровой счёт">
+          <div class="score-window"><span class="score-label">КРЕДИТЫ</span><strong id="balance">1 000</strong><span class="score-unit">BC POINTS</span></div>
+          <div class="score-center"><span class="tiny-diamond">◆</span><span>GOOD<br>FORTUNE</span><span class="tiny-diamond">◆</span></div>
+          <div class="score-window bet-window"><span class="score-label">СТАВКА</span><strong id="bet-display">10</strong><span class="score-unit">BC POINTS</span></div>
+        </section>
+
+        <section class="reel-housing" aria-label="Игровые барабаны">
+          <div class="housing-heading"><span>✦</span> SUPER SPIN <span>✦</span></div>
+          <div class="glass-bezel">
+            <div class="glass-reflection" aria-hidden="true"></div>
+            <div class="reels" aria-label="Барабаны">
+              <div class="reel-column"><span class="reel" id="slot1">7️⃣</span></div>
+              <div class="reel-column"><span class="reel" id="slot2">🔔</span></div>
+              <div class="reel-column"><span class="reel" id="slot3">💎</span></div>
+            </div>
+            <div class="payline" aria-hidden="true"><span></span></div>
+          </div>
+          <div class="housing-bottom"><span>★</span> THREE REELS • ENDLESS DREAMS <span>★</span></div>
+        </section>
+
+        <section class="lower-console">
+          <div class="console-medallion" aria-hidden="true"><span>BC</span><strong>7</strong><small>LUCKY STAR</small></div>
+          <div class="main-controls">
+            <label for="bet">ВЫБЕРИ СТАВКУ</label>
+            <select id="bet" aria-label="Выбрать ставку">
+              <option value="10">10 очков</option>
+              <option value="25">25 очков</option>
+              <option value="50">50 очков</option>
+              <option value="100">100 очков</option>
+            </select>
+            <button id="spin-button" class="spin-button" onclick="spin()"><span aria-hidden="true">✦</span><span class="button-copy">КРУТИТЬ!</span><span aria-hidden="true">✦</span></button>
+          </div>
+          <div class="lever-area" aria-hidden="true">
+            <div class="lever-base"></div><div class="lever-collar"></div>
+            <div class="lever-rod" id="lever-rod"><div class="lever-ball"></div></div>
+            <span class="lever-label">PULL</span>
+          </div>
+        </section>
+
+        <section class="result-strip" aria-live="polite">
+          <div class="status-light" aria-hidden="true"></div>
+          <div class="message-copy"><h2 id="result">АВТОМАТ ГОТОВ!</h2><p id="payout" class="payout">Испытай удачу — крути барабаны</p></div>
+          <div class="result-star" aria-hidden="true">★</div>
+        </section>
+
+        <section class="paytable" aria-label="Таблица выигрышей">
+          <div class="paytable-title">ТАБЛИЦА ВЫПЛАТ</div>
+          <div class="paytable-row"><span class="pay-symbol">7️⃣ 7️⃣ 7️⃣</span><span class="pay-name">ТРИ СЕМЁРКИ</span><strong>×10</strong></div>
+          <div class="paytable-row"><span class="pay-symbol">💎 💎 💎</span><span class="pay-name">ТРИ ОДИНАКОВЫХ</span><strong>×5</strong></div>
+          <div class="paytable-row"><span class="pay-symbol">🍒 🍒</span><span class="pay-name">ПАРА</span><strong>×2</strong></div>
+        </section>
+        <footer class="machine-footer"><span>BC7</span><b>✦</b><span>RETRO LUCK MACHINE</span><b>✦</b><span>VIRTUAL POINTS ONLY</span></footer>
+      </div>
+    </section>
+    <p class="stage-caption">A LITTLE LUCK · A LOT OF GLAMOUR</p>
+  </main>
+
+  <script>
+    let balance = 1000;
+    let spinning = false;
+    const symbols = { 1: "🍒", 2: "🔔", 3: "⭐", 4: "🍀", 5: "🍇", 6: "🍉", 7: "7️⃣", 8: "💎", 9: "BAR" };
+    const slots = [document.getElementById("slot1"), document.getElementById("slot2"), document.getElementById("slot3")];
+    const betSelect = document.getElementById("bet");
+    const betDisplay = document.getElementById("bet-display");
+    const balanceDisplay = document.getElementById("balance");
+    const button = document.getElementById("spin-button");
+    const result = document.getElementById("result");
+    const payoutDisplay = document.getElementById("payout");
+    const machine = document.querySelector(".machine");
+    const lever = document.getElementById("lever-rod");
+
+    function formatNumber(number) { return number.toLocaleString("ru-RU"); }
+    function showSymbol(number) { return symbols[number] || String(number); }
+    betSelect.addEventListener("change", () => { betDisplay.textContent = betSelect.value; });
+
+    async function spin() {
+      if (spinning) return;
+      const bet = Number(betSelect.value);
+      if (balance < bet) {
+        result.textContent = "НЕ ХВАТАЕТ КРЕДИТОВ";
+        payoutDisplay.textContent = "Выбери ставку поменьше.";
+        return;
+      }
+      spinning = true;
+      balance -= bet;
+      balanceDisplay.textContent = formatNumber(balance);
+      button.disabled = true;
+      betSelect.disabled = true;
+      button.querySelector(".button-copy").textContent = "УДАЧА...";
+      result.textContent = "БАРАБАНЫ ВРАЩАЮТСЯ";
+      payoutDisplay.textContent = "Пусть фортуна улыбнётся!";
+      machine.classList.remove("win", "jackpot", "lose");
+      lever.classList.add("pulled");
+      const animation = setInterval(() => {
+        slots.forEach(slot => {
+          slot.textContent = showSymbol(Math.floor(Math.random() * 9) + 1);
+          slot.classList.add("spinning");
+        });
+      }, 75);
+      try {
+        const responsePromise = fetch("/spin", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ bet }) });
+        const [response] = await Promise.all([responsePromise, new Promise(resolve => setTimeout(resolve, 1450))]);
+        if (!response.ok) throw new Error("Server error");
+        const data = await response.json();
+        clearInterval(animation);
+        slots.forEach((slot, index) => {
+          slot.classList.remove("spinning");
+          slot.textContent = showSymbol(data.numbers[index]);
+          slot.classList.add("landed");
+          setTimeout(() => slot.classList.remove("landed"), 450);
+        });
+        balance += data.payout;
+        balanceDisplay.textContent = formatNumber(balance);
+        result.textContent = data.kind === "jackpot" ? "✦ ДЖЕКПОТ! ✦" : data.kind === "triple" ? "ТРИ ОДИНАКОВЫХ!" : data.kind === "pair" ? "ЕСТЬ ПАРА!" : "В СЛЕДУЮЩИЙ РАЗ!";
+        if (data.payout > 0) {
+          payoutDisplay.textContent = `+${formatNumber(data.payout)} BC-очков`;
+          machine.classList.add(data.kind === "jackpot" ? "jackpot" : "win");
+        } else {
+          payoutDisplay.textContent = `−${formatNumber(bet)} BC-очков за ставку`;
+          machine.classList.add("lose");
+        }
+      } catch (error) {
+        clearInterval(animation);
+        slots.forEach(slot => slot.classList.remove("spinning"));
+        balance += bet;
+        balanceDisplay.textContent = formatNumber(balance);
+        result.textContent = "СВЯЗЬ ПРЕРВАНА";
+        payoutDisplay.textContent = "Ставка возвращена. Попробуй ещё раз.";
+      } finally {
+        spinning = false;
+        button.disabled = false;
+        betSelect.disabled = false;
+        button.querySelector(".button-copy").textContent = "КРУТИТЬ!";
+        setTimeout(() => lever.classList.remove("pulled"), 200);
+      }
+    }
+  </script>
+</body>
+</html>
